@@ -1,0 +1,6 @@
+ - name: Ansible playbook for CIS hardening
+   hosts: demo
+   become: yes
+   roles:
+     - CIS
+

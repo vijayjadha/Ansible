@@ -1,0 +1,23 @@
+# 6.2.5 Ensure no duplicate GIDs exist
+- name: 6.2.5 Ensure no duplicate GIDs exist
+  shell: |
+        cut -d: -f3 /etc/group | sort | uniq -d | while read x ; do
+          echo "Duplicate GID ($x) in /etc/group"
+        done
+  register: grep_result
+  ignore_errors: true
+
+- name: Display
+  set_fact:
+    tasks_status: "[Passed]"
+  when: grep_result.stdout.find('') != -1
+
+- name: Save result in file
+  lineinfile:
+    path: "{{Result_path}}"
+    line: "6.2.5 Ensure no duplicate GIDs exist {{tasks_status}}"
+  delegate_to: localhost
+
+- name: unset var
+  set_fact:
+    tasks_status: "[Failed]"

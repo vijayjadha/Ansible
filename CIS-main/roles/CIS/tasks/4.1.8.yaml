@@ -1,0 +1,37 @@
+# 4.1.8 Ensure cron is restricted to authorized users
+- name: Copy the script 
+  copy: 
+    src: "{{ role_path }}/files/4.1.8.sh"
+    dest: "{{temp_file}}/4.1.8.sh"
+
+- name: Make script executable
+  file:
+    path: "{{temp_file}}/4.1.8.sh"
+    mode: u+x      
+
+- name: shell script
+  ansible.builtin.shell:
+    cmd: "./4.1.8.sh"
+    chdir: "{{temp_file}}"
+  register: grep_result
+  ignore_errors: yes
+
+- name: Display the output of script
+  debug:
+    msg: "{{grep_result.stdout}}"
+
+- name: Display
+  set_fact:
+    tasks_status: "[Passed]"
+  when: grep_result.stdout.find('Pass') != -1
+
+- name: Save result in file
+  lineinfile:
+    path: /home/ec2-user/Result/result.txt
+    line: "4.1.8 Ensure cron is restricted to authorized users {{tasks_status}}"
+  delegate_to: localhost
+
+- name: unset var
+  set_fact:
+    tasks_status: "[Failed]"
+

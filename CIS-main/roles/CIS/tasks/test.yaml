@@ -1,0 +1,37 @@
+- name: Ensure default group for the root account is GID 0
+  shell: "grep '^root:' /etc/passwd | cut -f4 -d:"
+  register: grep_result
+  ignore_errors: true
+
+- name: Display
+  set_fact:
+    tasks_status: "[Passed]"
+  when: grep_result.stdout.find('0') != -1
+
+- name: Save result in file for 10.0.133.113
+  lineinfile:
+    path: "{{ Result_path_10.0.133.113 }}"
+    line: "4.1.1 Ensure system is not vulnerable to IPv4 IP forwarding {{ tasks_status }}"
+  delegate_to: localhost
+
+- name: Save result in file for 10.0.146.134
+  lineinfile:
+    path: "{{ Result_path_10.0.146.134 }}"
+    line: "4.1.1 Ensure system is not vulnerable to IPv4 IP forwarding {{ tasks_status }}"
+  delegate_to: localhost
+
+- name: Set result file name based on hostname
+  set_fact:
+    result_file_name: "result_{{ inventory_hostname }}.txt"
+
+- name: Save result in file
+  lineinfile:
+    path: "/home/ansible/CIS-main/Result/{{ result_file_name }}"
+    line: "test---- Ensure default group for the root account is GID 0 {{ tasks_status }}"
+  delegate_to: localhost
+  run_once: true  # Ensure this task runs only once on the control node
+
+- name: unset var
+  set_fact:
+    tasks_status: "[Failed]"
+

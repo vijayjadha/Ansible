@@ -1,0 +1,20 @@
+# 1.1.2.3 Ensure noexec option set on /tmp partition
+- name: 1.1.2.3 Ensure noexec option set on /tmp partition
+  shell: findmnt -kn /tmp | grep noexec
+  register: grep_result
+  ignore_errors: true
+
+- name: Display
+  set_fact:
+    tasks_status: "[Passed]"
+  when: grep_result.stdout.find('noexec') != -1
+
+- name: Save result in file
+  lineinfile:
+    path: "{{Result_path}}"
+    line: "1.1.2.3 Ensure noexec option set on /tmp partition {{tasks_status}}"
+  delegate_to: localhost
+
+- name: unset var
+  set_fact:
+    tasks_status: "[Failed]"

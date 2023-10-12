@@ -1,0 +1,20 @@
+# 6.1.7 Ensure permissions on /etc/shadow- are configured
+- name: 6.1.7 Ensure permissions on /etc/shadow- are configured
+  shell: stat -Lc "%n %a %u/%U %g/%G" /etc/shadow-
+  register: grep_result
+  ignore_errors: true
+
+- name: Display
+  set_fact:
+    tasks_status: "[Passed]"
+  when: grep_result.stdout.find('/etc/shadow- 0 0/root 0/root') != -1
+
+- name: Save result in file
+  lineinfile:
+    path: "{{Result_path}}"
+    line: "6.1.7 Ensure permissions on /etc/shadow- are configured {{tasks_status}}"
+  delegate_to: localhost
+
+- name: unset var
+  set_fact:
+    tasks_status: "[Failed]"

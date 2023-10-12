@@ -1,0 +1,21 @@
+# 4.6.1.4 Ensure inactive password lock is 30 days or less
+- name: Ensure inactive password lock is 30 days or less
+  shell: useradd -D | grep INACTIVE
+  register: grep_result
+  ignore_errors: true
+
+- name: Display
+  set_fact:
+    tasks_status: "{{ 'Passed' if (grep_result.stdout | regex_search('^INACTIVE=([0-9]+)$', '\\1') | int(default=0)) <= 30 and (grep_result.stdout | regex_search('^INACTIVE=-1$')) == None else 'Failed' }}"
+  when: grep_result.stdout != ""
+
+- name: Save result in file
+  lineinfile:
+    path: "{{Result_path}}"
+    line: "4.6.1.4 Ensure inactive password lock is 30 days or less  {{tasks_status}}"
+  delegate_to: localhost
+
+- name: unset var
+  set_fact:
+    tasks_status: "[Failed]"
+
