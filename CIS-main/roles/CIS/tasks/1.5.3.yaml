@@ -1,0 +1,20 @@
+# 1.5.3 Ensure core dump storage is disabled
+- name: 1.5.3 Ensure core dump storage is disabled
+  shell: grep -i '^\s*storage\s*=\s*none' /etc/systemd/coredump.conf
+  register: grep_result
+  ignore_errors: true
+
+- name: Display
+  set_fact:
+    tasks_status: "[Passed]"
+  when: grep_result.stdout.find('Storage=none') != -1
+
+- name: Save result in file
+  lineinfile:
+    path: "{{Result_path}}"
+    line: "1.5.3 Ensure core dump storage is disabled {{tasks_status}}"
+  delegate_to: localhost
+
+- name: unset var
+  set_fact:
+    tasks_status: "[Failed]"

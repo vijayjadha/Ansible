@@ -1,0 +1,20 @@
+# 1.2.2 Ensure gpgcheck is globally activated
+- name: 1.2.2 Ensure gpgcheck is globally activated
+  shell: grep ^gpgcheck /etc/dnf/dnf.conf
+  register: grep_result
+  ignore_errors: true
+
+- name: Display
+  set_fact:
+    tasks_status: "[Passed]"
+  when: grep_result.stdout.find('gpgcheck=1') != -1
+
+- name: Save result in file
+  lineinfile:
+    path: "{{Result_path}}"
+    line: "1.2.2 Ensure gpgcheck is globally activated {{tasks_status}}"
+  delegate_to: localhost
+
+- name: unset var
+  set_fact:
+    tasks_status: "[Failed]"

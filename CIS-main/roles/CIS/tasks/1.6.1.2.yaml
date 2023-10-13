@@ -1,0 +1,20 @@
+# 1.6.1.2 Ensure SELinux is not disabled in bootloader configuration
+- name: 1.6.1.2 Ensure SELinux is not disabled in bootloader configuration
+  shell: grubby --info=ALL | grep -Po '(selinux|enforcing)=0\b'
+  register: grep_result
+  ignore_errors: true
+
+- name: Display
+  set_fact:
+    tasks_status: "[Passed]"
+  when: grep_result.stdout.find('') != -1
+
+- name: Save result in file
+  lineinfile:
+    path: "{{Result_path}}"
+    line: "1.6.1.2 Ensure SELinux is not disabled in bootloader configuration {{tasks_status}}"
+  delegate_to: localhost
+
+- name: unset var
+  set_fact:
+    tasks_status: "[Failed]"
