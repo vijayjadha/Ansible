@@ -1,0 +1,20 @@
+# 2.2.18 Ensure rsync-daemon is not installed or the rsyncd service is masked
+- name: 2.2.18 Ensure rsync-daemon is not installed or the rsyncd service is masked
+  shell: rpm -q rsync-daemon
+  register: grep_result
+  ignore_errors: true
+
+- name: Display
+  set_fact:
+    tasks_status: "[Passed]"
+  when: grep_result.stdout.find('package rsync is not installed') != -1
+
+- name: Save result in file
+  lineinfile:
+    path: "{{Result_path}}"
+    line: "2.2.18 Ensure rsync-daemon is not installed or the rsyncd service is masked  {{tasks_status}}"
+  delegate_to: localhost
+
+- name: unset var
+  set_fact:
+    tasks_status: "[Failed]"
