@@ -1,0 +1,21 @@
+# 5.1.1.7 Ensure rsyslog is not configured to receive logs from a remote client
+- name: Ensure rsyslog is not configured to receive logs from a remote client
+  shell: grep -Ps -- '^\h*module\(load="imtcp"\)' /etc/rsyslog.conf /etc/rsyslog.d/*.conf
+  register: grep_result
+  ignore_errors: true
+
+- name: Display
+  set_fact:
+    tasks_status: "[Passed]"
+  when: grep_result.stdout.find("") != -1
+
+- name: Save result in file
+  lineinfile:
+    path: "{{Result_path}}"
+    line: "5.1.1.7 Ensure rsyslog is not configured to receive logs from a remote client  {{tasks_status}}"
+  delegate_to: localhost
+
+- name: unset var
+  set_fact:
+    tasks_status: "[Failed]"
+

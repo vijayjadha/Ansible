@@ -1,0 +1,20 @@
+# 4.3.1 Ensure sudo is installed
+- name: 4.3.1 Ensure sudo is installed
+  shell:  dnf list sudo
+  register: grep_result
+  ignore_errors: true
+
+- name: Display
+  set_fact:
+    tasks_status: "[Passed]"
+  when: grep_result.stdout.find('sudo.x86_64') != -1
+
+- name: Save result in file
+  lineinfile:
+    path: "{{Result_path}}"
+    line: "4.3.1 Ensure sudo is installed {{tasks_status}}"
+  delegate_to: localhost
+
+- name: unset var
+  set_fact:
+    tasks_status: "[Failed]"

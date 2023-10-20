@@ -1,0 +1,21 @@
+# 5.2.2.3 Ensure system is disabled when audit logs are full
+- name: 5.2.2.3 Ensure system is disabled when audit logs are full
+  shell: grep space_left_action /etc/audit/auditd.conf
+  register: grep_result
+  ignore_errors: true
+
+- name: Display
+  set_fact:
+    tasks_status: "[Passed]"
+  when: "'space_left_action = email' in grep_result.stdout"
+
+- name: Save result in file
+  lineinfile:
+    path: "{{Result_path}}"
+    line: "5.2.2.3 Ensure system is disabled when audit logs are full  {{tasks_status}}"
+  delegate_to: localhost
+
+- name: unset var
+  set_fact:
+    tasks_status: "[Failed]"
+

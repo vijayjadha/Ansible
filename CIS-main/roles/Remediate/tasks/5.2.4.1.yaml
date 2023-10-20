@@ -1,0 +1,20 @@
+- name: 5.2.4.1 Ensure audit log files are mode 0640 or less permissive
+  shell: '[ -f /etc/audit/auditd.conf ] && find "$(dirname $(awk -F "=" "/^\\s*log_file/ {print \$2}" /etc/audit/auditd.conf | xargs))" -type f \( ! -perm 600 -a ! -perm 0400 -a ! -perm 0200 -a ! -perm 0000 -a ! -perm 0640 -a ! -perm 0440 -a ! -perm 0040 \) -exec stat -Lc "%n %#a" {} +'
+  register: grep_result
+  ignore_errors: true
+
+- name: Display
+  set_fact:
+    tasks_status: "[Passed]"
+  when: grep_result.stdout == ""
+
+- name: Save result in file
+  lineinfile:
+    path: "{{Result_path}}"
+    line: "5.2.4.1 Ensure audit log files are mode 0640 or less permissive {{tasks_status}}"
+  delegate_to: localhost
+
+- name: unset var
+  set_fact:
+    tasks_status: "[Failed]"
+

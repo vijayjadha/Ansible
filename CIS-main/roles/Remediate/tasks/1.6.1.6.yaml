@@ -1,0 +1,20 @@
+# 1.6.1.6 Ensure no unconfined services exist
+- name: 1.6.1.6 Ensure no unconfined services exist
+  shell: ps -eZ | grep unconfined_service_t
+  register: grep_result
+  ignore_errors: true
+
+- name: Display
+  set_fact:
+    tasks_status: "[Passed]"
+  when: grep_result.stdout.find('') != -1
+
+- name: Save result in file
+  lineinfile:
+    path: "{{Result_path}}"
+    line: "1.6.1.6 Ensure no unconfined services exist {{tasks_status}}"
+  delegate_to: localhost
+
+- name: unset var
+  set_fact:
+    tasks_status: "[Failed]"

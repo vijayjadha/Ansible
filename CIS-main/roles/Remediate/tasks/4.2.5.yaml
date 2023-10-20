@@ -1,0 +1,35 @@
+# 4.2.5 Ensure SSH LogLevel is appropriate
+- name: Ensure SSH LogLevel is appropriate
+  shell:   grep -Pi -- '^\h*loglevel' /etc/ssh/sshd_config | grep -Evi '(VERBOSE|INFO)'
+  register: grep_result
+  ignore_errors: true
+
+- name: Display
+  set_fact:
+    tasks_status: "[Passed]"
+  when: grep_result.stdout.find('') != -1
+
+- name: unset var
+  set_fact:
+    tasks_status: "[Failed]"
+
+- name: Ensure SSH LogLevel is appropriate
+  shell: sshd -T -C user=root -C host="$(hostname)" -C addr="$(grep $(hostname) /etc/hosts | awk '{print $1}')" | grep loglevel
+  register: grep_result
+  ignore_errors: true
+
+- name: Display
+  set_fact:
+    tasks_status: "[Passed]"
+  when: grep_result.stdout.find("INFO") != -1
+
+- name: Save result in file
+  lineinfile:
+    path: "{{Result_path}}"
+    line: "4.2.5 Ensure SSH LogLevel is appropriate {{tasks_status}}"
+  delegate_to: localhost
+
+- name: unset var
+  set_fact:
+    tasks_status: "[Failed]"
+

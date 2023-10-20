@@ -1,0 +1,21 @@
+# 6.1.4 Ensure permissions on /etc/group are configured
+- name: 6.1.4 Ensure permissions on /etc/group are configured
+  shell: stat -Lc "%n %a %u/%U %g/%G" /etc/group
+  register: grep_result
+  ignore_errors: true
+
+- name: Display
+  set_fact:
+    tasks_status: "[Passed]"
+  when: grep_result.stdout.find('/etc/group 644 0/root 0/root') != -1
+
+- name: Save result in file
+  lineinfile:
+    path: "{{Result_path}}"
+    line: "6.1.4 Ensure permissions on /etc/group are configured {{tasks_status}}"
+  delegate_to: localhost
+
+- name: unset var
+  set_fact:
+    tasks_status: "[Failed]"
+

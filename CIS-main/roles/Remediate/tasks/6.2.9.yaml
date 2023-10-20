@@ -1,0 +1,21 @@
+# 6.2.9 Ensure root is the only UID 0 account
+- name: Ensure root is the only UID 0 account
+  shell: "awk -F: '($3 == 0) { print $1 }' /etc/passwd"
+  register: grep_result
+  ignore_errors: true
+
+- name: Display
+  set_fact:
+    tasks_status: "[Passed]"
+  when: grep_result.stdout.find('root') != -1
+
+- name: Save result in file
+  lineinfile:
+    path: "{{Result_path}}"
+    line: "6.2.9 Ensure root is the only UID 0 account {{tasks_status}}"
+  delegate_to: localhost
+
+- name: unset var
+  set_fact:
+    tasks_status: "[Failed]"
+

@@ -1,0 +1,20 @@
+# 1.6.1.1 Ensure SELinux is installed
+- name: 1.6.1.1 Ensure SELinux is installed
+  shell: rpm -q libselinux
+  register: grep_result
+  ignore_errors: true
+
+- name: Display
+  set_fact:
+    tasks_status: "[Passed]"
+  when: grep_result.rc == 0
+
+- name: Save result in file
+  lineinfile:
+    path: "{{Result_path}}"
+    line: "1.6.1.1 Ensure SELinux is installed {{tasks_status}}"
+  delegate_to: localhost
+
+- name: unset var
+  set_fact:
+    tasks_status: "[Failed]"

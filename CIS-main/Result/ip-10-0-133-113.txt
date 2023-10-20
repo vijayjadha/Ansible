@@ -1,0 +1,6 @@
+4.1.1 Check if cron daemon is installed [Failed]
+4.1.2 Ensure permissions on /etc/crontab are configured [Failed]
+4.1.3 Ensure permissions on /etc/cron.monthly are configured [Failed]
+4.1.4 Ensure permissions on /etc/cron.daily are configured [Failed]
+4.1.5 Ensure permissions on /etc/cron.weekly are configured [Failed]
+4.1.6 Ensure permissions on /etc/cron.monthly are configured [Failed]

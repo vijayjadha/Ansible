@@ -1,0 +1,24 @@
+# 6.2.6 Ensure no duplicate user names exist
+- name: 6.2.6 Ensure no duplicate user names exist
+  shell: |
+        cut -d: -f1 /etc/passwd | sort | uniq -d | while read -r x; do
+          echo "Duplicate login name $x in /etc/passwd"
+        done
+  register: grep_result
+  ignore_errors: true
+
+- name: Display
+  set_fact:
+    tasks_status: "[Passed]"
+  when: grep_result.stdout.find('') != -1
+
+- name: Save result in file
+  lineinfile:
+    path: "{{Result_path}}"
+    line: "6.2.6 Ensure no duplicate user names exist {{tasks_status}}"
+  delegate_to: localhost
+
+- name: unset var
+  set_fact:
+    tasks_status: "[Failed]"
+

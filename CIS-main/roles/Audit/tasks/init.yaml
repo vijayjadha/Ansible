@@ -1,0 +1,6 @@
+---
+  - name: Create a file
+    file:
+      path: "{{Result_path}}"  # Specify the file path and name
+      state: touch  # Use 'touch' to create an empty file
+    delegate_to: localhost
