@@ -1,20 +1,11 @@
 # 6.1.8 Ensure permissions on /etc/gshadow are configured
-- name: 6.1.8 Ensure permissions on /etc/gshadow are configured
-  shell: stat -Lc "%n %a %u/%U %g/%G" /etc/gshadow
-  register: grep_result
-  ignore_errors: true
+- name: 6.1.8 Remove excess permissions on /etc/gshadow
+  file:
+    path: /etc/gshadow
+    mode: '0000'
 
-- name: Display
-  set_fact:
-    tasks_status: "[Passed]"
-  when: grep_result.stdout.find('/etc/gshadow 0 0/root 0/root') != -1
-
-- name: Save result in file
-  lineinfile:
-    path: "{{Result_path}}"
-    line: "6.1.8 Ensure permissions on /etc/gshadow are configured {{tasks_status}}"
-  delegate_to: localhost
-
-- name: unset var
-  set_fact:
-    tasks_status: "[Failed]"
+- name: 6.1.8 Set owner and group on /etc/gshadow
+  file:
+    path: /etc/gshadow
+    owner: root
+    group: root

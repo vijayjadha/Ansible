@@ -2,6 +2,6 @@
    hosts: demo
    become: yes
    roles:
-     - Audit
-       # - Remediate
+     # - Audit
+     - Remediate
 

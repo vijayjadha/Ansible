@@ -1,24 +1,11 @@
+---
 # 1.5.4 Ensure core dump backtraces are disabled
 - name: 1.5.4 Ensure core dump backtraces are disabled
-  shell:  >-
-    grep -Pi '^\h*ProcessSizeMax\h*=\h*0\b' /etc/systemd/coredump.conf ||
-    echo -e "\n- Audit results:\n ** Fail **\n - \"ProcessSizeMax\" is: \"$(grep -i 'ProcessSizeMax' /etc/systemd/coredump.conf)\""
-
-
-  register: grep_result
-  ignore_errors: true
-
-- name: Display
-  set_fact:
-    tasks_status: "[Passed]"
-  when: grep_result.stdout.find('ProcessSizeMax=0') != -1
-
-- name: Save result in file
   lineinfile:
-    path: "{{Result_path}}"
-    line: "1.5.4 Ensure core dump backtraces are disabled {{tasks_status}}"
-  delegate_to: localhost
+   path: /etc/systemd/coredump.conf
+   regexp: '^(?i)#?\s*ProcessSizeMax\s*='
+                                   # '^': This symbol indicates the beginning of a line.
+                                   # '(?i)':It means that the regular expression will match the pattern regardless of whether the letters are uppercase or lowercase.                                   # #?: This part matches an optional # character (used for commenting out settings).
+                                   # The ? symbol means that the # character may or may not be present.
+   line: 'ProcessSizeMax=0'
 
-- name: unset var
-  set_fact:
-    tasks_status: "[Failed]"

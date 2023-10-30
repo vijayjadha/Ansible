@@ -1,21 +1,9 @@
 # 4.6.1.2 Ensure minimum days between password changes is configured
 - name: 4.6.1.2 Ensure minimum days between password changes is configured
-  shell: grep PASS_MIN_DAYS /etc/login.defs
-  register: grep_result
-  ignore_errors: true
-
-- name: Display
-  set_fact:
-    tasks_status: "[Passed]"
-  when: grep_result.stdout.find("1") != -1
-
-- name: Save result in file
   lineinfile:
-    path: "{{Result_path}}"
-    line: "4.6.1.2 Ensure minimum days between password changes is configured  {{tasks_status}}"
-  delegate_to: localhost
-
-- name: unset var
-  set_fact:
-    tasks_status: "[Failed]"
-
+   path: /etc/login.defs
+   regexp: '^(?i)#?\s*PASS_MIN_DAYS='
+                                   # '^': This symbol indicates the beginning of a line.
+                                   # '(?i)':It means that the regular expression will match the pattern regardless of whether the letters are uppercase or lowercase.                                   # #?: This part matches an optional # character (used for commenting out settings).
+                                   # The ? symbol means that the # character may or may not be present.
+   line: 'PASS_MIN_DAYS=1'

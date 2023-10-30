@@ -1,22 +1,11 @@
 # 6.1.1 Ensure permissions on /etc/passwd are configured
-- name: Ensure permissions on /etc/passwd are configured
-  shell: stat -Lc "%n %a %u/%U %g/%G" /etc/passwd
-  register: grep_result
-  ignore_errors: true
+- name: 6.1.1 Remove excess permissions on /etc/passwd
+  file:
+    path: /etc/passwd
+    mode: '0644'
 
-- name: Display
-  set_fact:
-    tasks_status: "[Passed]"
-  when: grep_result.stdout.find('/etc/passwd 644 0/root 0/root') != -1
-
-- name: Save result in file
-  lineinfile:
-    path: "{{Result_path}}"
-    line: "6.1.1 Ensure permissions on /etc/passwd are configured {{tasks_status}}"
-  delegate_to: localhost
-
-- name: unset var
-  set_fact:
-    tasks_status: "[Failed]"
-
-
+- name: 6.1.1 Set owner and group on /etc/passwd
+  file: 
+    path: /etc/passwd
+    owner: root
+    group: root 

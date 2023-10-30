@@ -2,5 +2,5 @@
 tasks_status: "[Failed]"
 path: "/home/ansible/CIS-main/Result/"
 temp_file: "/temp_files_csi"
-role_path: "/home/ansible/CIS-main/roles/CIS"
+role_path: "/home/ansible/CIS-main/roles/Remediate"
 Result_path: "{{ path }}{{ ansible_hostname }}.txt"

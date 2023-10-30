@@ -1,22 +1,17 @@
 # 4.5.4 Ensure password hashing algorithm is SHA-512
-- name: Ensure password hashing algorithm is SHA-512
-  shell: grep -Ei '^\s*crypt_style\s*=\s*(sha512|yescrypt)\b' /etc/libuser.conf
-  register: grep_result
-  ignore_errors: true
-
-- name: Display
-  set_fact:
-    tasks_status: "[Passed]"
-  when: grep_result.stdout.find("sha512") != -1
-
-- name: Save result in file
+- name: 4.5.4 Set crypt_style in /etc/libuser.conf
   lineinfile:
-    path: "{{Result_path}}"
-    line: "4.5.4 Ensure password hashing algorithm is SHA-512  {{tasks_status}}"
-  delegate_to: localhost
+   path: /etc/libuser.conf
+   regexp: '^(?i)#?\s*crypt_style\s*=\s*\w+'
+                        # '^': This symbol indicates the beginning of a line.
+                        # '(?i)':It means that the regular expression will match the pattern regardless of whether the letters are uppercase or lowercase.                                   # #?: This part matches an optional # character (used for commenting out settings).
+                        # The ? symbol means that the # character may or may not be present.
+                        # \w+: This part matches one or more word characters. Word characters include letters (a to z, A to Z), digits (0 to 9), and underscores (_). 
+   line: 'crypt_style = sha512'
 
-- name: unset var
-  set_fact:
-    tasks_status: "[Failed]"
-
-
+- name: 4.5.4 Set ENCRYPT_METHOD in /etc/login.defs
+  lineinfile:
+   path: /etc/login.defs
+   regexp: '^(?i)#?\s*ENCRYPT_METHOD\s+\w+'
+   line: 'ENCRYPT_METHOD YESCRYPT'
+                       # \s+: This matches one or more whitespace characters. It ensures that there is at least one space or tab after "ENCRYPT_METHOD."
