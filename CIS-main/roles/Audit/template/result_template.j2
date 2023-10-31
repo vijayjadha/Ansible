@@ -1,0 +1,4 @@
+"Hostname","Task Name","Status"
+{% for task_name in task_names %}
+"{{ ansible_hostname }}","{{ task_name }}","{{ tasks_status }}"
+{% endfor %}

@@ -1,7 +1,15 @@
- - name: Ansible playbook for CIS hardening
-   hosts: demo
-   become: yes
-   roles:
-     # - Audit
-     - Remediate
+- name: Ansible playbook for CIS hardening
+  hosts: demo
+  become: yes
+  roles:
+    - Audit
+    
+
+  handlers:
+    - name: run_remediate_role
+      include_role:
+        name: Audit
+        tasks_from: handlers/audit_handlers.yml
+  when: tasks_status == "[Failed]"
+
 

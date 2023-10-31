@@ -1,8 +1,0 @@
-# 3.4.2.6 Ensure nftables established connections are configured
-- name: Gather facts
-  setup:
-
-- name: Add rule to allow established TCP connections
-  when: "nftables_enabled.stdout == 'enabled'"
-  nftables:
-    rule: inet filter input ip protocol tcp ct state established accept

@@ -1,0 +1,3 @@
+"Hostname","Task Name","Status"
+"ip-10-0-2-18","4.1.1 Check if cron daemon is installed","[Failed]"
+"ip-10-0-2-18","1.3.1 Ensure AIDE is installed","[Failed]"
