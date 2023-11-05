@@ -1,0 +1,21 @@
+- name: Ansible playbook for CIS hardening
+  hosts: demo
+  become: yes
+  roles:
+    - Audit
+
+- name: Read CSV file and run Remediate tasks
+  hosts: demo
+  become: yes
+  tasks:
+    - name: Read CSV file
+      set_fact:
+        csv_data: "{{ lookup('csvfile', csv_output_path ~ '.' ~ ansible_hostname ~ '.csv') }}"
+      delegate_to: localhost
+
+    - name: Run Remediate tasks based on CSV data
+      include_role:
+        name: Remediate
+        tasks_from: "{{ item.1 | replace(' ', '_') }}.yml"
+      when: item.2 == "Failed"  # Check the 'Status' column in the CSV
+      with_items: "{{ csv_data }}"

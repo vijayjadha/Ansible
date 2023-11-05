@@ -1,15 +1,13 @@
-- name: Ansible playbook for CIS hardening
-  hosts: demo
-  become: yes
-  roles:
+ - name: Ansible playbook for CIS hardening
+   hosts: demo
+   become: yes
+   roles:
     - Audit
-    
+  # - Remediate
 
-  handlers:
-    - name: run_remediate_role
-      include_role:
-        name: Audit
-        tasks_from: handlers/audit_handlers.yml
-  when: tasks_status == "[Failed]"
-
-
+   tasks:
+    - name: Save results to the CSV file
+      template:
+        src: /home/ansible/CIS-main/roles/Audit/template/result_template.j2  # Path to your Jinja2 template file
+        dest: "{{ csv_output_path }}.{{ ansible_hostname }}.csv"   # Path where you want to save the CSV file
+      delegate_to: localhost
