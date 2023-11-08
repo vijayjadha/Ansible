@@ -1,0 +1,6 @@
+# 2.1.1 Ensure time synchronization is in use
+- name: 2.1.1 Ensure time synchronization is in use
+  dnf:
+    name: chrony
+    state: present
+

@@ -1,18 +1,18 @@
-# 6.1.1 Ensure permissions on /etc/passwd are configured
+# 2.1.1 Ensure time synchronization is in use
 - name: set var
   set_fact:
-    task_name: "Ensure permissions on /etc/passwd are configured"
-    task_id: "6.1.1" 
+    task_name: "Ensure time synchronization is in use"
+    task_id: "2.1.1"
 
-- name: Ensure permissions on /etc/passwd are configured
-  shell: stat -Lc "%n %a %u/%U %g/%G" /etc/passwd
+- name: 2.1.1 Ensure time synchronization is in use
+  shell: rpm -q chrony
   register: grep_result
   ignore_errors: true
 
 - name: Display
   set_fact:
-    tasks_status: "Passed"
-  when: grep_result.stdout.find('/etc/passwd 644 0/root 0/root') != -1
+    tasks_status: "[Passed]"
+  when: grep_result.rc == 0
 
 - name: Add result to task_results
   set_fact:

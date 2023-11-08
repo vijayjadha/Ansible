@@ -1,5 +1,5 @@
 ---
-tasks_status: "[Failed]"
+tasks_status: "Failed"
 path: "/home/ansible/CIS-main/Result/"
 temp_file: "/temp_files_csi"
 role_path: "/home/ansible/CIS-main/roles/CIS"
