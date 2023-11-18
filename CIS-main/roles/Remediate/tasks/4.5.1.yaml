@@ -1,0 +1,17 @@
+---
+# 4.5.1 Ensure password creation requirements are configured
+- name: 4.5.1 Set password length requirement
+  lineinfile: 
+   path: /etc/security/pwquality.conf
+   regexp: '^(?i)#?\s*minlen\s*=\s*\d+' # '^': This symbol indicates the beginning of a line.
+                                   # '(?i)':It means that the regular expression will match the pattern regardless of whether the letters are uppercase or lowercase.                                   # #?: This part matches an optional # character (used for commenting out settings).
+                                   # The ? symbol means that the # character may or may not be present.
+                                   # \d+: This part of the regular expression matches one or more digit characters (0-9). 
+   line: 'minlen=14'
+
+- name: 4.5.1 Set password complexity requirements
+  lineinfile:
+   path: /etc/security/pwquality.conf
+   regexp: '^(?i)#?\s*minclass\s*=\s*\d+'
+   line: 'minclass = 4'
+

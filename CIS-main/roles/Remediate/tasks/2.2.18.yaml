@@ -1,0 +1,5 @@
+# 2.2.18 Ensure rsync-daemon is not installed or the rsyncd service is masked
+- name: 2.2.18 Ensure rsync-daemon is not installed or the rsyncd service is masked
+  dnf:
+    name: rsync-daemon
+    state: absent

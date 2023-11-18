@@ -1,0 +1,5 @@
+# 2.2.6 Ensure an ftp server is not installed
+- name: 2.2.6 Ensure an ftp server is not installed
+  dnf:
+    name: vsftpd
+    state: absent

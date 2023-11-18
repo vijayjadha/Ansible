@@ -1,0 +1,42 @@
+ - name: Ansible playbook for CIS hardening
+   hosts: demo
+   become: yes
+   roles:
+    - Audit
+  
+   tasks:
+    - name: Save results to the CSV file
+      template:
+        src: /home/ansible/CIS-main/roles/Audit/template/result_template.j2  # Path to your Jinja2 template file
+        dest: "{{ csv_output_path }}.{{ ansible_hostname }}.csv"   # Path where you want to save the CSV file
+      delegate_to: localhost
+
+    - name: Load audit results from the CSV file
+      command: cat "{{ csv_output_path }}.{{ ansible_hostname }}.csv"
+      register: audit_results_content
+      delegate_to: localhost
+      changed_when: false
+
+    - name: audit results and set task_id and tasks_status
+      set_fact:
+        task_id: "{{ item.split(',')[0] | trim | regex_replace('^\"|\"$', '') }}"
+        tasks_status: "{{ item.split(',')[2] | trim | regex_replace('^\"|\"$', '') }}"
+      when: audit_results_content.stdout_lines | length > 1
+      loop: "{{ audit_results_content.stdout_lines }}"
+      ignore_errors: yes
+    
+    - name: Debug tasks_status
+      debug:
+        msg: "tasks_status: {{ tasks_status }}"    
+    
+    - name: Run Remediation Tasks
+      include_tasks: "/home/ansible/CIS-main/roles/Remediate/tasks/{{ task_id }}.yaml"
+      when: tasks_status == "Failed"
+ 
+
+ - name: Remediate
+   hosts: demo
+   become: yes
+   roles:
+    - Remediate
+  

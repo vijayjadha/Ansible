@@ -1,0 +1,5 @@
+# 2.2.2 Ensure avahi is not installed
+- name: 2.2.2 Ensure avahi is not installed
+  dnf:
+    name: avahi
+    state: absent

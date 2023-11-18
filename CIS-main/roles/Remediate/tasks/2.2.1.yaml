@@ -1,0 +1,5 @@
+# 2.2.1 Ensure xorg-x11-server-common is not installed
+- name: 2.2.1 Ensure xorg-x11-server-common is not installed
+  dnf:
+    name: xorg-x11-server-common
+    state: absent

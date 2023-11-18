@@ -1,0 +1,15 @@
+# 4.5.2 Ensure lockout for failed password attempts is configured
+- name: 4.5.2 Set deny in faillock.conf
+  lineinfile:
+   path: /etc/security/faillock.conf
+   regexp: '^(?i)#?\s*deny\s*=\s*\d+' # '^': This symbol indicates the beginning of a line.
+                                   # '(?i)':It means that the regular expression will match the pattern regardless of whether the letters are uppercase or lowercase.                                   # #?: This part matches an optional # character (used for commenting out settings).
+                                   # The ? symbol means that the # character may or may not be present.
+                                   # \d+: This part of the regular expression matches one or more digit characters (0-9).
+   line: 'deny=5'
+
+- name: 4.5.2 Set unlock_time in faillock.conf
+  lineinfile:
+   path: /etc/security/faillock.conf
+   regexp: '^(?i)#?\s*unlock_time\s*=\s*\d+'
+   line: 'unlock_time = 900'

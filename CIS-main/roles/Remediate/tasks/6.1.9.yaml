@@ -1,0 +1,11 @@
+# 6.1.9 Ensure permissions on /etc/gshadow- are configured
+- name: 6.1.9 Remove excess permissions on /etc/gshadow-
+  file:
+    path: /etc/gshadow-
+    mode: '0000'
+
+- name: 6.1.9 Set owner and group on /etc/gshadow-
+  file:
+    path: /etc/gshadow-
+    owner: root
+    group: root

@@ -1,0 +1,20 @@
+# 1.1.6.1 Ensure separate partition exists for /var/log/audit
+- name: 1.1.6.1 Ensure separate partition exists for /var/log/audit
+  shell: findmnt --kernel /var/log/audit
+  register: grep_result
+  ignore_errors: true
+
+- name: Display
+  set_fact:
+    tasks_status: "[Passed]"
+  when: grep_result.stdout.find('/var/log/audit') != -1
+
+- name: Save result in file
+  lineinfile:
+    path: "{{Result_path}}"
+    line: "1.1.6.1 Ensure separate partition exists for /var/log/audit {{tasks_status}}"
+  delegate_to: localhost
+
+- name: unset var
+  set_fact:
+    tasks_status: "[Failed]"

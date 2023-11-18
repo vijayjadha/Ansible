@@ -1,0 +1,5 @@
+# 2.2.16 Ensure nfs-utils is not installed or the nfs-server service is masked
+- name: 2.2.16 Ensure nfs-utils is not installed or the nfs-server service is masked
+  dnf:
+    name: nfs-utils
+    state: absent

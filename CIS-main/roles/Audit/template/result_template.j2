@@ -1,0 +1,5 @@
+"Task ID","Task Name","Status"
+{% for result in task_results %}
+"{{ result.task_id }}","{{ result.task_name }}","{{ result.tasks_status }}"
+{% endfor %}
+

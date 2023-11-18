@@ -1,0 +1,20 @@
+# 1.1.8.2 Ensure nodev option set on /dev/shm partition
+- name: 1.1.8.2 Ensure nodev option set on /dev/shm partition
+  shell: mount | grep -E '\s/dev/shm\s' | grep -v nodev
+  register: grep_result
+  ignore_errors: true
+
+- name: Display
+  set_fact:
+    tasks_status: "[Passed]"
+  when: grep_result.stdout.find('nodev') != -1
+
+- name: Save result in file
+  lineinfile:
+    path: "{{Result_path}}"
+    line: "1.1.8.2 Ensure nodev option set on /dev/shm partition {{tasks_status}}"
+  delegate_to: localhost
+
+- name: unset var
+  set_fact:
+    tasks_status: "[Failed]"

@@ -1,0 +1,11 @@
+# 6.1.1 Ensure permissions on /etc/passwd are configured
+- name: 6.1.1 Remove excess permissions on /etc/passwd
+  file:
+    path: /etc/passwd
+    mode: '0644'
+
+- name: 6.1.1 Set owner and group on /etc/passwd
+  file: 
+    path: /etc/passwd
+    owner: root
+    group: root 

@@ -1,0 +1,21 @@
+- name: Check if cron daemon is installed
+  shell: rpm -q cronie
+  register: grep_result
+  ignore_errors: yes
+
+- name: Display cron daemon installation status
+  set_fact:
+    tasks_status: "[Passed]"
+  when: grep_result.rc != 1
+
+- name: Save result in file
+  lineinfile:
+    line: "Check if cron daemon is installed {{ tasks_status }}"
+    path: "{{ Result_path }}"
+  delegate_to: localhost
+
+- name: unset var
+  set_fact:
+    tasks_status: "[Failed]"
+
+

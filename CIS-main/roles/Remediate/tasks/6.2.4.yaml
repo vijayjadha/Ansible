@@ -1,0 +1,28 @@
+# 6.2.4 Ensure no duplicate UIDs exist
+- name: 6.2.4 Ensure no duplicate UIDs exist
+  shell: |
+        cut -f3 -d":" /etc/passwd | sort -n | uniq -c | while read x ; do
+          [ -z "$x" ] && break
+          set - $x
+          if [ $1 -gt 1 ]; then
+            users=$(awk -F: '($3 == n) { print $1 }' n=$2 /etc/passwd | xargs)
+            echo "Duplicate UID ($2): $users"
+          fi
+        done
+  register: grep_result
+  ignore_errors: true
+
+- name: Display
+  set_fact:
+    tasks_status: "[Passed]"
+  when: grep_result.stdout.find('') != -1
+
+- name: Save result in file
+  lineinfile:
+    path: "{{Result_path}}"
+    line: "6.2.4 Ensure no duplicate UIDs exist {{tasks_status}}"
+  delegate_to: localhost
+
+- name: unset var
+  set_fact:
+    tasks_status: "[Failed]"

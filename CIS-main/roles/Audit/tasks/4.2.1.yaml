@@ -1,0 +1,21 @@
+# 4.2.1 Ensure permissions on /etc/ssh/sshd_config are configured
+- name: Ensure permissions on /etc/ssh/sshd_config are configured
+  shell:  stat -Lc "%n %a %u/%U %g/%G" /etc/ssh/sshd_config
+  register: grep_result
+  ignore_errors: true
+
+- name: Condition
+  set_fact:
+    tasks_status: "[Passed]"
+  when: grep_result.stdout.find('600') != -1
+
+- name: Save result in file
+  lineinfile:
+    path: "{{Result_path}}"
+    line: " 4.2.1 Ensure permissions on /etc/ssh/sshd_config are configure {{tasks_status}}"
+  delegate_to: localhost
+
+- name: unset var
+  set_fact:
+    tasks_status: "[Failed]"
+

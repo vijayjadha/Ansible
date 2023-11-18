@@ -1,0 +1,5 @@
+# 2.2.5 Ensure a dns server is not installed
+- name: 2.2.5 Ensure a dns server is not installed
+  dnf:
+    name: bind
+    state: absent

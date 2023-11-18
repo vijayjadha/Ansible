@@ -1,0 +1,11 @@
+---
+# 1.5.4 Ensure core dump backtraces are disabled
+- name: 1.5.4 Ensure core dump backtraces are disabled
+  lineinfile:
+   path: /etc/systemd/coredump.conf
+   regexp: '^(?i)#?\s*ProcessSizeMax\s*='
+                                   # '^': This symbol indicates the beginning of a line.
+                                   # '(?i)':It means that the regular expression will match the pattern regardless of whether the letters are uppercase or lowercase.                                   # #?: This part matches an optional # character (used for commenting out settings).
+                                   # The ? symbol means that the # character may or may not be present.
+   line: 'ProcessSizeMax=0'
+

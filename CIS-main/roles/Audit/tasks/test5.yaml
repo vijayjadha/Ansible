@@ -1,0 +1,25 @@
+# 6.1.1 Ensure permissions on /etc/passwd are configured
+- name: set var
+  set_fact:
+    task_name: "Ensure permissions on /etc/passwd are configured"
+    task_id: "6.1.1" 
+
+- name: Ensure permissions on /etc/passwd are configured
+  shell: stat -Lc "%n %a %u/%U %g/%G" /etc/passwd
+  register: grep_result
+  ignore_errors: true
+
+- name: Display
+  set_fact:
+    tasks_status: "Passed"
+  when: grep_result.stdout.find('/etc/passwd 644 0/root 0/root') != -1
+
+- name: Add result to task_results
+  set_fact:
+    task_results: "{{ task_results | default([]) + [{'task_id': task_id, 'task_name': task_name, 'tasks_status': tasks_status}] }}"
+
+- name: unset var
+  set_fact:
+    tasks_status: "Failed"
+    task_name: ""
+    task_id: ""

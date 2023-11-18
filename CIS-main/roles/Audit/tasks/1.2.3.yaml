@@ -1,0 +1,20 @@
+# 1.2.3 Ensure package manager repositories are configured
+- name: 1.2.3 Ensure package manager repositories are configured
+  shell: dnf repolist
+  register: grep_result
+  ignore_errors: true
+
+- name: Display
+  set_fact:
+    tasks_status: "[Passed]"
+  when: grep_result.stdout.find('repo id') != -1
+
+- name: Save result in file
+  lineinfile:
+    path: "{{Result_path}}"
+    line: "1.2.3 Ensure package manager repositories are configured {{tasks_status}}"
+  delegate_to: localhost
+
+- name: unset var
+  set_fact:
+    tasks_status: "[Failed]"

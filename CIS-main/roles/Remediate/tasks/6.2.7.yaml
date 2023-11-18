@@ -1,0 +1,23 @@
+# 6.2.7 Ensure no duplicate group names exist
+- name: 6.2.7 Ensure no duplicate group names exist
+  shell: |
+        cut -d: -f1 /etc/group | sort | uniq -d | while read -r x; do
+          echo "Duplicate group name $x in /etc/group"
+        done
+  register: grep_result
+  ignore_errors: true
+
+- name: Display
+  set_fact:
+    tasks_status: "[Passed]"
+  when: grep_result.stdout.find('') != -1
+
+- name: Save result in file
+  lineinfile:
+    path: "{{Result_path}}"
+    line: "6.2.7 Ensure no duplicate group names exist {{tasks_status}}"
+  delegate_to: localhost
+
+- name: unset var
+  set_fact:
+    tasks_status: "[Failed]"

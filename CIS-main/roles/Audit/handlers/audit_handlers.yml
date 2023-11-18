@@ -1,0 +1,5 @@
+---
+- name: run_remediate_role
+  include_role:
+    name: Remediate
+

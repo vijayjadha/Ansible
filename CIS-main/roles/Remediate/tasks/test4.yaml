@@ -1,0 +1,32 @@
+---
+    - name: Ensure permissions on /etc/cron.monthly are configured
+      shell:  stat /etc/cron.hourly
+      register: grep_result
+      ignore_errors: true
+
+    - name: Display
+      set_fact:
+       tasks_status: "[Passed]"
+      when: grep_result.stdout.find('700') != -1
+
+    - name: Create Directory for IP Results
+      file:
+        path: "{{Result_path}}"
+        state: directory
+      delegate_to: localhost
+
+    - name: Save Information to File on Control Node
+      copy:
+        content: "{{ grep_result.stdout }}"
+        dest: "/home/ansible/CIS-main/Result/{{ inventory_hostname }}_ip.txt"
+      delegate_to: localhost
+
+    - name: Save result in file
+      lineinfile:
+        path: "/home/ansible/CIS-main/Result/{{ inventory_hostname }}_ip.txt"
+        line: "4.1.4 Ensure permissions on /etc/cron.daily are configured {{tasks_status}}"
+      delegate_to: localhost
+
+    - name: unset var
+      set_fact:
+        tasks_status: "[Failed]"

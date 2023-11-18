@@ -1,0 +1,5 @@
+# 2.2.7 Ensure a tftp server is not installed 
+- name: 2.2.7 Ensure a tftp server is not installed
+  dnf:
+    name: tftp-server
+    state: absent

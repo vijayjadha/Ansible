@@ -1,0 +1,23 @@
+# 5.2.1.1 Ensure auditd is installed
+- name: Ensure auditd is installed
+  command: rpm -q audit
+  register: rpm_result
+  ignore_errors: true
+
+- name: Set tasks_status to Passed
+  set_fact:
+    tasks_status: "[Passed]"
+  when: rpm_result.stdout != "package audit is not installed"
+
+- name: Set tasks_status to Failed
+  set_fact:
+    tasks_status: "[Failed]"
+  when: rpm_result.stdout == "package audit is not installed"
+
+- name: Save result in file
+  lineinfile:
+    path: "{{ Result_path }}"
+    line: "5.2.1.1 Ensure auditd is installed  {{ tasks_status }}"
+  delegate_to: localhost
+
+

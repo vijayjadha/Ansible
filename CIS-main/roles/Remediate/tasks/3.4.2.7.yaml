@@ -1,0 +1,20 @@
+# 3.4.2.7 Ensure nftables default deny firewall policy
+- name: 3.4.2.7 Ensure nftables default deny firewall policy
+  shell: systemctl --quiet is-enabled nftables.service && nft list ruleset | grep 'hook input' | grep -v 'policy drop'
+  register: grep_result
+  ignore_errors: true
+
+- name: Display
+  set_fact:
+    tasks_status: "[Passed]"
+  when: grep_result.stdout.find('') != -1
+
+- name: Save result in file
+  lineinfile:
+    path: "{{Result_path}}"
+    line: "3.4.2.7 Ensure nftables default deny firewall policy  {{tasks_status}}"
+  delegate_to: localhost
+
+- name: unset var
+  set_fact:
+    tasks_status: "[Failed]"

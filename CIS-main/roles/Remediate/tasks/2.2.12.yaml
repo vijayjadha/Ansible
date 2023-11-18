@@ -1,0 +1,5 @@
+# 2.2.12 Ensure net-snmp is not installed or the snmpd service is not enabled
+- name: 2.2.12 Ensure net-snmp is not installed or the snmpd service is not enabled
+  dnf:
+    name: net-snmp
+    state: absent

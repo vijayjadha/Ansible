@@ -1,0 +1,5 @@
+# 2.2.4 Ensure a dhcp server is not installed
+- name: 2.2.4 Ensure a dhcp server is not installed
+  dnf:
+    name: dhcp-server
+    state: absent

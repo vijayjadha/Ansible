@@ -1,0 +1,9 @@
+# 2.2.9 Ensure IMAP and POP3 server is not installed
+- name: Ensure IMAP not installed
+  dnf:
+    name: dovecot
+    state: absent
+- name: Ensure POP3 not installed
+  dnf:
+    name: cyrus-imapd
+    state: absent

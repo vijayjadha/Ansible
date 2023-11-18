@@ -1,0 +1,6 @@
+# 4.3.1 Ensure sudo is installed
+- name: 4.3.1 Ensure sudo is installed
+  dnf:
+    name: sudo 
+    state: present
+

@@ -1,0 +1,4 @@
+- name: Create a temp location on remote machine
+  file:
+    path: "{{temp_file}}"
+    state: directory

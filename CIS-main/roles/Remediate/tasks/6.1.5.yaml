@@ -1,0 +1,11 @@
+# 6.1.5 Ensure permissions on /etc/group- are configured
+- name: 6.1.5 Remove excess permissions on /etc/group-
+  file:
+    path: /etc/group-
+    mode: '0644'
+
+- name: 6.1.5 Set owner and group on /etc/group-
+  file:
+    path: /etc/group-
+    owner: root
+    group: root

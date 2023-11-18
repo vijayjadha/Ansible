@@ -1,0 +1,42 @@
+# 4.5.2 Ensure lockout for failed password attempts is configured
+- name: verify that Number of failed logon attempts before the account is locked is no greater than 5 
+  shell:  grep -E '^\s*deny\s*=\s*[1-5]\b' /etc/security/faillock.conf
+  register: grep_result
+  ignore_errors: true
+
+- name: Display
+  set_fact:
+    tasks_status: "[Passed]"
+  when: grep_result.stdout.find('5') != -1
+
+- name: Save result in file
+  lineinfile:
+    path: "{{Result_path}}"
+    line: "4.5.2 verify that Number of failed logon attempts before the account is locked is no greater than 5 {{tasks_status}}"
+  delegate_to: localhost
+
+- name: unset var
+  set_fact:
+    tasks_status: "[Failed]"
+
+- name: verify that the time in seconds before the account is unlocked is either 0 (never) or 900 or more.
+  shell: grep -E '^\s*unlock_time\s*=\s*(0|9[0-9][0-9]|[1-9][0-9][0-9][0-9]+)\b' /etc/security/faillock.conf
+  register: grep_result
+  ignore_errors: true
+
+- name: Display
+  set_fact:
+    tasks_status: "[Passed]"
+  when: grep_result.stdout.find("900") != -1
+
+- name: Save result in file
+  lineinfile:
+    path: "{{Result_path}}"
+    line: "4.5.2 verify that the time in seconds before the account is unlocked is either 0 (never) or 900 or more. {{tasks_status}}"
+  delegate_to: localhost
+
+- name: unset var
+  set_fact:
+    tasks_status: "[Failed]"
+
+

@@ -1,0 +1,23 @@
+# 5.2.4.2 Ensure only authorized users own audit log files
+- name: Ensure only authorized users own audit log files
+  shell: >
+    [ -f /etc/audit/auditd.conf ] &&
+    find "$(dirname $(awk -F "=" '/^\s*log_file/ {print $2}' /etc/audit/auditd.conf | xargs))" -type f ! -user root -exec stat -Lc "%n %U" {} +
+  register: grep_result
+  ignore_errors: true
+
+- name: Display
+  set_fact:
+    tasks_status: "[Passed]"
+  when: grep_result.stdout == ""
+
+- name: Save result in file
+  lineinfile:
+    path: "{{Result_path}}"
+    line: "5.2.4.2 Ensure only authorized users own audit log files {{tasks_status}}"
+  delegate_to: localhost
+
+- name: unset var
+  set_fact:
+    tasks_status: "[Failed]"
+

@@ -1,0 +1,26 @@
+# 6.2.3 Ensure all groups in /etc/passwd exist in /etc/group
+- name: 6.2.3 Ensure all groups in /etc/passwd exist in /etc/group
+  shell: |
+        for i in $(cut -s -d: -f4 /etc/passwd | sort -u ); do
+          grep -q -P "^.*?:[^:]*:$i:" /etc/group
+          if [ $? -ne 0 ]; then
+            echo "Group $i is referenced by /etc/passwd but does not exist in /etc/group"
+          fi
+        done
+  register: grep_result
+  ignore_errors: true
+
+- name: Display
+  set_fact:
+    tasks_status: "[Passed]"
+  when: grep_result.stdout.find('') != -1
+
+- name: Save result in file
+  lineinfile:
+    path: "{{Result_path}}"
+    line: "6.2.3 Ensure all groups in /etc/passwd exist in /etc/group {{tasks_status}}"
+  delegate_to: localhost
+
+- name: unset var
+  set_fact:
+    tasks_status: "[Failed]"

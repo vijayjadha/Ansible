@@ -1,0 +1,11 @@
+# 6.1.7 Ensure permissions on /etc/shadow- are configured
+- name: 6.1.7 Remove excess permissions on /etc/shadow-
+  file:
+    path: /etc/shadow-
+    mode: '0000'
+
+- name: 6.1.7 Set owner and group on /etc/shadow-
+  file:
+    path: /etc/shadow-
+    owner: root
+    group: root

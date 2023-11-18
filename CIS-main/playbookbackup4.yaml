@@ -1,0 +1,26 @@
+- name: Ansible playbook for CIS hardening
+  hosts: demo
+  become: yes
+  roles:
+    - Audit
+
+- hosts: demo
+  become: yes
+  gather_facts: false
+  vars:
+    csv_output_path: "/home/ansible/CIS-main/Result/"
+  tasks:
+    - name: Initialize results list
+      set_fact:
+        task_results: []
+
+    - include: /home/ansible/CIS-main/roles/Audit/tasks/main.yaml
+
+  tasks:
+    - name: Save results to the CSV file
+      template:
+        src: /home/ansible/CIS-main/roles/Audit/template/result_template.j2
+        dest: "{{ csv_output_path }}.{{ ansible_hostname }}.csv"
+        delegate_to: localhost
+      run_once: true  # Ensure this task runs only once
+

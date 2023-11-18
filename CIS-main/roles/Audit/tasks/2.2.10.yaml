@@ -1,0 +1,20 @@
+# 2.2.10 Ensure Samba is not installed
+- name: 2.2.10 Ensure Samba is not installed
+  shell: rpm -q samba
+  register: grep_result
+  ignore_errors: true
+
+- name: Display
+  set_fact:
+    tasks_status: "[Passed]"
+  when: grep_result.stdout.find('package samba is not installed') != -1
+
+- name: Save result in file
+  lineinfile:
+    path: "{{Result_path}}"
+    line: "2.2.10 Ensure Samba is not installed  {{tasks_status}}"
+  delegate_to: localhost
+
+- name: unset var
+  set_fact:
+    tasks_status: "[Failed]"

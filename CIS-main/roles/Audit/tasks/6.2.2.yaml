@@ -1,0 +1,20 @@
+# 6.2.2 Ensure /etc/shadow password fields are not empty
+- name: 6.2.2 Ensure /etc/shadow password fields are not empty
+  shell: 'awk -F: "($2 == \"\") { print $1 \" does not have a password \" }" /etc/shadow'
+  register: grep_result
+  ignore_errors: true
+
+- name: Display
+  set_fact:
+    tasks_status: "[Passed]"
+  when: grep_result.stdout.find('') != -1
+
+- name: Save result in file
+  lineinfile:
+    path: "{{Result_path}}"
+    line: "6.2.2 Ensure /etc/shadow password fields are not empty {{tasks_status}}"
+  delegate_to: localhost
+
+- name: unset var
+  set_fact:
+    tasks_status: "[Failed]"

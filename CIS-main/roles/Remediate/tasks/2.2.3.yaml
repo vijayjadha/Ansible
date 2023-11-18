@@ -1,0 +1,5 @@
+# 2.2.3 Ensure a print server is not installed
+- name: 2.2.3 Ensure a print server is not installed
+  dnf:
+    name: cups
+    state: absent

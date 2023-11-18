@@ -1,0 +1,7 @@
+---
+- name: Set permissions on /var/lib/update-motd/motd
+  file:
+    path: /var/lib/update-motd/motd
+    owner: root
+    group: root
+    mode: '0644'

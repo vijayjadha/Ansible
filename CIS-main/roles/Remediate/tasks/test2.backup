@@ -1,0 +1,19 @@
+- name: Ensure permissions on /etc/cron.weekly are configured
+  shell: stat /etc/cron.weekly | grep 700
+  register: grep_result
+  ignore_errors: true
+
+- name: Display
+  set_fact:
+    tasks_status: "[Passed]"
+  when: grep_result.stdout.find('700') != -1
+
+- name: Save result in file
+  copy:
+    content: "4.1.5 Ensure permissions on /etc/cron.weekly are configured {{ tasks_status }}"
+    dest: "{{ Result_path }}/{{ inventory_hostname }}_ip.txt"
+  delegate_to: localhost
+
+- name: unset var
+  set_fact:
+    tasks_status: "[Failed]"

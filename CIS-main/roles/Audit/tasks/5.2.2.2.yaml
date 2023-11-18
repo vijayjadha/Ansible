@@ -1,0 +1,21 @@
+# 5.2.2.2 Ensure audit logs are not automatically deleted
+- name: Ensure audit logs are not automatically deleted
+  shell: grep max_log_file_action /etc/audit/auditd.conf
+  register: grep_result
+  ignore_errors: true
+
+- name: Display
+  set_fact:
+    tasks_status: "[Passed]"
+  when: "'max_log_file_action = keep_logs' in grep_result.stdout"
+
+- name: Save result in file
+  lineinfile:
+    path: "{{Result_path}}"
+    line: "5.2.2.2 Ensure audit logs are not automatically deleted  {{tasks_status}}"
+  delegate_to: localhost
+
+- name: unset var
+  set_fact:
+    tasks_status: "[Failed]"
+

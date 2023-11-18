@@ -1,0 +1,5 @@
+# 2.2.11 Ensure HTTP Proxy Server is not installed
+- name: 2.2.11 Ensure HTTP Proxy Server is not installed
+  dnf:
+    name: squid
+    state: absent

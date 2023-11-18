@@ -1,0 +1,20 @@
+# 1.1.5.1 Ensure separate partition exists for /var/log
+- name: 1.1.5.1 Ensure separate partition exists for /var/log
+  shell: findmnt --kernel /var/log
+  register: grep_result
+  ignore_errors: true
+
+- name: Display
+  set_fact:
+    tasks_status: "[Passed]"
+  when: grep_result.stdout.find('/var/log') != -1
+
+- name: Save result in file
+  lineinfile:
+    path: "{{Result_path}}"
+    line: "1.1.5.1 Ensure separate partition exists for /var/log {{tasks_status}}"
+  delegate_to: localhost
+
+- name: unset var
+  set_fact:
+    tasks_status: "[Failed]"

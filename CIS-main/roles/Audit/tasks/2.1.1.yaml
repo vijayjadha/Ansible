@@ -1,0 +1,20 @@
+# 2.1.1 Ensure time synchronization is in use
+- name: 2.1.1 Ensure time synchronization is in use
+  shell: rpm -q chrony
+  register: grep_result
+  ignore_errors: true
+
+- name: Display
+  set_fact:
+    tasks_status: "[Passed]"
+  when: grep_result.rc == 0
+
+- name: Save result in file
+  lineinfile:
+    path: "{{Result_path}}"
+    line: "2.1.1 Ensure time synchronization is in use {{tasks_status}}"
+  delegate_to: localhost
+
+- name: unset var
+  set_fact:
+    tasks_status: "[Failed]"

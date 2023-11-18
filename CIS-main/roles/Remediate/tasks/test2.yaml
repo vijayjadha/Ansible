@@ -1,0 +1,24 @@
+# 6.1.1 Ensure permissions on /etc/passwd are configured
+- name: Load audit results from the CSV file
+  command: cat "{{ csv_output_path }}.{{ ansible_hostname }}.csv"
+  register: audit_results_content
+  delegate_to: localhost
+  changed_when: false  # This task doesn't change anything, so we mark it as not changed
+
+- name:  audit results and set task_id and tasks_status
+  set_fact:
+    task_id: "{{ item.split(',')[0] }}"
+    tasks_status: "{{ item.split(',')[2] }}"
+  when: audit_results_content.stdout_lines | length > 1
+  loop: "{{ audit_results_content.stdout_lines }}"
+  ignore_errors: yes
+
+- name: 6.1.1 Ensure permissions on /etc/passwd are configured
+  file:
+    path: /etc/passwd
+    mode: '0644'
+    owner: root
+    group: root
+  when: task_id == "6.1.1" and tasks_status | trim == "Failed"
+
+

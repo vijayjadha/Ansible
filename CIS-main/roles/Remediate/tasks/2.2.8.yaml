@@ -1,0 +1,11 @@
+# 2.2.8 Ensure a web server is not installed
+- name: Remove httpd package
+  dnf:
+    name: httpd
+    state: absent
+
+- name: Remove nginx package
+  dnf:
+    name: nginx
+    state: absent
+

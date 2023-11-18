@@ -1,0 +1,24 @@
+---
+- name: Information Gathering Playbook
+  hosts: demo
+  gather_facts: yes
+  become: yes
+
+  tasks:
+    - name: Gather IP Information
+      set_fact:
+        ip_address: "{{ ansible_default_ipv4.address }}"
+      changed_when: false
+
+    - name: Create Directory for IP Results
+      file:
+        path: "/home/ansible/CIS-main/Result/"
+        state: directory
+      delegate_to: localhost
+
+    - name: Save IP Information to File on Control Node
+      copy:
+        content: "{{ ip_address }}"
+        dest: "/home/ansible/CIS-main/Result/{{ inventory_hostname }}_ip.txt"
+      delegate_to: localhost
+
