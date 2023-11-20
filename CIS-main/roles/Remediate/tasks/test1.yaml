@@ -1,4 +1,4 @@
-# 6.1.1 Ensure permissions on /etc/passwd are configured
+# 6.1.4 Ensure permissions on /etc/group are configured
 - name: Load audit results from the CSV file
   command: cat "{{ csv_output_path }}.{{ ansible_hostname }}.csv"
   register: audit_results_content
@@ -13,15 +13,12 @@
   loop: "{{ audit_results_content.stdout_lines }}"
   ignore_errors: yes
 
-- name: 6.1.1 Ensure permissions on /etc/passwd are configured
+- name: 6.1.4 Remove excess permissions on /etc/group
   file:
-    path: /etc/passwd
+    path: /etc/group
     mode: '0644'
     owner: root
     group: root
-  when: "'6.1.1' in item.split(',')[0] and 'Failed' in item.split(',')[2] | trim"
+  when: "'6.1.4' in item.split(',')[0] and 'Failed' in item.split(',')[2] | trim"
   loop: "{{ audit_results_content.stdout_lines }}"
   ignore_errors: yes
-      # when: task_id == "6.1.1" and tasks_status | trim == "Failed"
-
-

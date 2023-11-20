@@ -1,3 +1,4 @@
 "Task ID","Task Name","Status"
-"1.3.1","Ensure AIDE is installed","Failed"
+"6.1.4","Ensure permissions on /etc/group are configured","[Passed]"
+"6.1.1","Ensure permissions on /etc/passwd are configured","Passed"
 

@@ -3,17 +3,24 @@
   become: yes
   roles:
     - Audit
- 
+
   tasks:
     - name: Save results to the CSV file
       template:
         src: /home/ansible/CIS-main/roles/Audit/template/result_template.j2
         dest: "{{ csv_output_path }}.{{ ansible_hostname }}.csv"
       delegate_to: localhost
- 
- 
+
+
 - name: Remediate
   hosts: demo
   become: yes
   roles:
     - Remediate
+
+  tasks:
+    - name: Save results to the CSV file
+      template:
+        src: /home/ansible/CIS-main/roles/Remediate/template/result_template.j2
+        dest: "{{ csv_output_path }}.{{ ansible_hostname }}.csv"
+      delegate_to: localhost
