@@ -1,3 +1,9 @@
 - name: min_len
   debug:
      msg: "Error"
+
+- name: restart systemd-journald
+  systemd:
+    name: systemd-journald
+    state: restarted
+

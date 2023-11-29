@@ -1,0 +1,26 @@
+# 4.5.2 Ensure lockout for failed password attempts is configured
+
+- name: set var
+  set_fact:
+    task_name: "verify that the time in seconds before the account is unlocked is either 0 (never) or 900 or more."
+    task_id: "4.5.2.2"
+
+- name: 4.5.2.2 verify that the time in seconds before the account is unlocked is either 0 (never) or 900 or more.
+  shell: grep -E '^\s*unlock_time\s*=\s*(0|9[0-9][0-9]|[1-9][0-9][0-9][0-9]+)\b' /etc/security/faillock.conf
+  register: grep_result
+  ignore_errors: true
+
+- name: Display
+  set_fact:
+    tasks_status: "Passed"
+  when: grep_result.stdout.find("900") != -1
+
+- name: Add result to task_results
+  set_fact:
+    task_results: "{{ task_results | default([]) + [{'task_id': task_id, 'task_name': task_name, 'tasks_status': tasks_status}] }}"
+
+- name: unset var
+  set_fact:
+    tasks_status: "Failed"
+    task_name: ""
+    task_id: ""

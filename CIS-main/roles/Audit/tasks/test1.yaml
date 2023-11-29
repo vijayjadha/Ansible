@@ -11,7 +11,7 @@
 
 - name: Display
   set_fact:
-    tasks_status: "[Passed]"
+    tasks_status: "Passed"
   when: grep_result.stdout.find('/etc/group 644 0/root 0/root') != -1
 
 - name: Add result to task_results

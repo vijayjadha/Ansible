@@ -1,0 +1,25 @@
+# 5.1.2.5 Ensure journald is not configured to send logs to rsyslog
+- name: set var
+  set_fact:
+    task_name: "Ensure journald is not configured to send logs to rsyslog"
+    task_id: "5.1.2.5"
+
+- name: 5.1.2.5 Ensure journald is not configured to send logs to rsyslog
+  shell: grep ^\s*ForwardToSyslog /etc/systemd/journald.conf
+  register: grep_result
+  ignore_errors: true
+
+- name: Display
+  set_fact:
+    tasks_status: "Passed"
+  when: grep_result.stdout is not defined or grep_result.stdout | length == 0
+
+- name: Add result to task_results
+  set_fact:
+    task_results: "{{ task_results | default([]) + [{'task_id': task_id, 'task_name': task_name, 'tasks_status': tasks_status}] }}"
+
+- name: unset var
+  set_fact:
+    tasks_status: "Failed"
+    task_name: ""
+    task_id: ""

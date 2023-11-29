@@ -1,0 +1,25 @@
+# 1.7.2 Ensure local login warning banner is configured properly
+- name: set var
+  set_fact:
+    task_name: "Ensure local login warning banner is configured properly"
+    task_id: "1.7.2"
+
+- name: 1.7.2 Ensure local login warning banner is configured properly
+  shell: 'grep -E -i "(\\v|\\r|\\m|\\s|$(grep ''^ID='' /etc/os-release | cut -d= -f2 | sed -e ''s/\"//g''))" /etc/issue'
+  register: grep_result
+  ignore_errors: true
+
+- name: Display
+  set_fact:
+    tasks_status: "Passed"
+  when: grep_result.stdout is defined and "Authorized uses only. All activity may be monitored and reported." in grep_result.stdout
+
+- name: Add result to task_results
+  set_fact:
+    task_results: "{{ task_results | default([]) + [{'task_id': task_id, 'task_name': task_name, 'tasks_status': tasks_status}] }}"
+
+- name: unset var
+  set_fact:
+    tasks_status: "Failed"
+    task_name: ""
+    task_id: ""

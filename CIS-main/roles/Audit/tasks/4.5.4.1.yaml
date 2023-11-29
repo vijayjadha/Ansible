@@ -1,0 +1,26 @@
+# 4.5.4 Ensure password hashing algorithm is SHA-512
+
+- name: set var
+  set_fact:
+    task_name: "verify the hashing algorithm is sha512 or yescrypt in /etc/libuser.conf"
+    task_id: "4.5.4.1"
+
+- name: 4.5.4.1 verify the hashing algorithm is sha512 or yescrypt in /etc/libuser.conf
+  shell: grep -Ei '^\s*crypt_style\s*=\s*(sha512|yescrypt)\b' /etc/libuser.conf
+  register: grep_result
+  ignore_errors: true
+
+- name: Display
+  set_fact:
+    tasks_status: "Passed"
+  when: grep_result.stdout.find("sha512") != -1
+
+- name: Add result to task_results
+  set_fact:
+    task_results: "{{ task_results | default([]) + [{'task_id': task_id, 'task_name': task_name, 'tasks_status': tasks_status}] }}"
+
+- name: unset var
+  set_fact:
+    tasks_status: "Failed"
+    task_name: ""
+    task_id: ""

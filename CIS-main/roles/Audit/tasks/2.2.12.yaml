@@ -1,4 +1,10 @@
 # 2.2.12 Ensure net-snmp is not installed or the snmpd service is not enabled
+
+- name: set var
+  set_fact:
+    task_name: "Ensure net-snmp is not installed or the snmpd service is not enabled"
+    task_id: "2.2.12"
+ 
 - name: 2.2.12 Ensure net-snmp is not installed or the snmpd service is not enabled
   shell: rpm -q net-snmp
   register: grep_result
@@ -6,16 +12,15 @@
 
 - name: Display
   set_fact:
-    tasks_status: "[Passed]"
+    tasks_status: "Passed"
   when: grep_result.stdout.find('package net-snmp is not installed') != -1
 
-- name: Save result in file
-  lineinfile:
-    path: "{{Result_path}}"
-    line: "2.2.12 Ensure net-snmp is not installed or the snmpd service is not enabled  {{tasks_status}}"
-  delegate_to: localhost
-
+- name: Add result to task_results
+  set_fact:
+    task_results: "{{ task_results | default([]) + [{'task_id': task_id, 'task_name': task_name, 'tasks_status': tasks_status}] }}"
+ 
 - name: unset var
   set_fact:
-    tasks_status: "[Failed]"
-
+    tasks_status: "Failed"
+    task_name: ""
+    task_id: ""

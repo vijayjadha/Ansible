@@ -1,4 +1,10 @@
 # 2.2.14 Ensure dnsmasq is not installed
+
+- name: set var
+  set_fact:
+    task_name: "Ensure dnsmasq is not installed"
+    task_id: "2.2.14"
+ 
 - name: 2.2.14 Ensure dnsmasq is not installed
   shell: rpm -q dnsmasq
   register: grep_result
@@ -6,15 +12,15 @@
 
 - name: Display
   set_fact:
-    tasks_status: "[Passed]"
+    tasks_status: "Passed"
   when: grep_result.stdout.find('package dnsmasq is not installed') != -1
 
-- name: Save result in file
-  lineinfile:
-    path: "{{Result_path}}"
-    line: "2.2.14 Ensure dnsmasq is not installed  {{tasks_status}}"
-  delegate_to: localhost
-
+- name: Add result to task_results
+  set_fact:
+    task_results: "{{ task_results | default([]) + [{'task_id': task_id, 'task_name': task_name, 'tasks_status': tasks_status}] }}"
+ 
 - name: unset var
   set_fact:
-    tasks_status: "[Failed]"
+    tasks_status: "Failed"
+    task_name: ""
+    task_id: ""

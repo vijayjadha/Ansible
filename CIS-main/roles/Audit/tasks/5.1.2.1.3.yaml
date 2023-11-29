@@ -1,0 +1,25 @@
+# 5.1.2.1.3 Ensure systemd-journal-remote is enabled
+- name: set var
+  set_fact:
+    task_name: "Ensure systemd-journal-remote is enabled"
+    task_id: "5.1.2.1.3"
+
+- name: 5.1.2.1.3 Ensure systemd-journal-remote is enabled
+  shell: systemctl is-enabled systemd-journal-upload.service
+  register: grep_result
+  ignore_errors: yes
+
+- name: Display 
+  set_fact:
+    tasks_status: "Passed"
+  when: grep_result.stdout.find('enabled') != -1
+
+- name: Add result to task_results
+  set_fact:
+    task_results: "{{ task_results | default([]) + [{'task_id': task_id, 'task_name': task_name, 'tasks_status': tasks_status}] }}"
+
+- name: unset var
+  set_fact:
+    tasks_status: "Failed"
+    task_name: ""
+    task_id: ""

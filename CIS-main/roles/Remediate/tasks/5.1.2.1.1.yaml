@@ -1,0 +1,5 @@
+# 5.1.2.1.1 Ensure systemd-journal-remote is installed
+- name: 5.1.2.1.1 Ensure systemd-journal-remote is installed
+  dnf:
+    name: systemd-journal-remote
+    state: present

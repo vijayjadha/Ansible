@@ -1,22 +1,25 @@
 # 5.2.4.3 Ensure only authorized groups are assigned ownership of audit log files
-- name: Ensure only authorized groups are assigned ownership of audit log files
+- name: set var
+  set_fact:
+    task_name: "Ensure only authorized groups are assigned ownership of audit log files"
+    task_id: "5.2.4.3"
+
+- name: 5.2.4.3 Ensure only authorized groups are assigned ownership of audit log files
   shell: grep -Piw -- '^\h*log_group\h*=\h*(adm|root)\b' /etc/audit/auditd.conf
   register: grep_result
   ignore_errors: true
 
 - name: Display
   set_fact:
-    tasks_status: "[Passed]"
+    tasks_status: "Passed"
   when: grep_result.stdout | regex_search('adm|root')
 
-- name: Save result in file
-  lineinfile:
-    path: "{{Result_path}}"
-    line: "5.2.4.3 Ensure only authorized groups are assigned ownership of audit log files {{tasks_status}}"
-  delegate_to: localhost
+- name: Add result to task_results
+  set_fact:
+    task_results: "{{ task_results | default([]) + [{'task_id': task_id, 'task_name': task_name, 'tasks_status': tasks_status}] }}"
 
 - name: unset var
   set_fact:
-    tasks_status: "[Failed]"
-
-
+    tasks_status: "Failed"
+    task_name: ""
+    task_id: ""

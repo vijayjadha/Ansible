@@ -1,5 +1,11 @@
 # 4.6.1.1 Ensure password expiration is 365 days or less
-- name: Ensure password expiration is 365 days or less
+
+- name: set var
+  set_fact:
+    task_name: "Ensure password expiration is 365 days or less"
+    task_id: "4.6.1.1"
+ 
+- name: 4.6.1.1 Ensure password expiration is 365 days or less
   shell: grep -E '^\s*PASS_MAX_DAYS\s+[0-9]+' /etc/login.defs | awk '{print $2}'
   register: grep_result
   ignore_errors: true
@@ -9,13 +15,13 @@
     tasks_status: "{{ 'Passed' if grep_result.stdout | int(default=0) <= 365 else 'Failed' }}"
   when: grep_result.rc == 0
 
-- name: Save result in file
-  lineinfile:
-    path: "{{Result_path}}"
-    line: "4.6.1.1 Ensure password expiration is 365 days or less  {{tasks_status}}"
-  delegate_to: localhost
-
+- name: Add result to task_results
+  set_fact:
+    task_results: "{{ task_results | default([]) + [{'task_id': task_id, 'task_name': task_name, 'tasks_status': tasks_status}] }}"
+ 
 - name: unset var
   set_fact:
-    tasks_status: "[Failed]"
+    tasks_status: "Failed"
+    task_name: ""
+    task_id: ""
 

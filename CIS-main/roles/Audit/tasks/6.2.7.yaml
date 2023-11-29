@@ -1,4 +1,9 @@
 # 6.2.7 Ensure no duplicate group names exist
+- name: set var
+  set_fact:
+    task_name: "Ensure no duplicate group names exist"
+    task_id: "6.2.7"
+
 - name: 6.2.7 Ensure no duplicate group names exist
   shell: |
         cut -d: -f1 /etc/group | sort | uniq -d | while read -r x; do
@@ -9,15 +14,15 @@
 
 - name: Display
   set_fact:
-    tasks_status: "[Passed]"
+    tasks_status: "Passed"
   when: grep_result.stdout.find('') != -1
 
-- name: Save result in file
-  lineinfile:
-    path: "{{Result_path}}"
-    line: "6.2.7 Ensure no duplicate group names exist {{tasks_status}}"
-  delegate_to: localhost
+- name: Add result to task_results
+  set_fact:
+    task_results: "{{ task_results | default([]) + [{'task_id': task_id, 'task_name': task_name, 'tasks_status': tasks_status}] }}"
 
 - name: unset var
   set_fact:
-    tasks_status: "[Failed]"
+    tasks_status: "Failed"
+    task_name: ""
+    task_id: ""

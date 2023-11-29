@@ -1,0 +1,26 @@
+# 4.5.2 Ensure lockout for failed password attempts is configured
+
+- name: set var
+  set_fact:
+    task_name: "verify that Number of failed logon attempts before the account is locked is no greater than 5"
+    task_id: "4.5.2.1"
+
+- name: 4.5.2.1 verify that Number of failed logon attempts before the account is locked is no greater than 5
+  shell:  grep -E '^\s*deny\s*=\s*[1-5]\b' /etc/security/faillock.conf
+  register: grep_result
+  ignore_errors: true
+
+- name: Display
+  set_fact:
+    tasks_status: "Passed"
+  when: grep_result.stdout.find('5') != -1
+
+- name: Add result to task_results
+  set_fact:
+    task_results: "{{ task_results | default([]) + [{'task_id': task_id, 'task_name': task_name, 'tasks_status': tasks_status}] }}"
+
+- name: unset var
+  set_fact:
+    tasks_status: "Failed"
+    task_name: ""
+    task_id: ""

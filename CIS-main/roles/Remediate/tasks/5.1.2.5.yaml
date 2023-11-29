@@ -1,0 +1,6 @@
+- name: 5.1.2.5 Ensure journald is not configured to send logs to rsyslog
+  replace:
+    path: /etc/systemd/journald.conf
+    regexp: '^ForwardToSyslog=yes'
+    replace: ''
+  notify: restart systemd-journald

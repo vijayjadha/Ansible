@@ -1,0 +1,25 @@
+# 1.7.1 Ensure message of the day is configured properly
+- name: set var
+  set_fact:
+    task_name: "Ensure message of the day is configured properly"
+    task_id: "1.7.1"
+
+- name: 1.7.1 Ensure message of the day is configured properly
+  shell: 'grep -E -i "(\\v|\\r|\\m|\\s|$(grep ''^ID='' /etc/os-release | cut -d= -f2 | sed -e ''s/\"//g''))" /etc/motd'
+  register: grep_result
+  ignore_errors: true
+
+- name: Display
+  set_fact:
+    tasks_status: "Passed"
+  when: grep_result.stdout.find('') != -1
+
+- name: Add result to task_results
+  set_fact:
+    task_results: "{{ task_results | default([]) + [{'task_id': task_id, 'task_name': task_name, 'tasks_status': tasks_status}] }}"
+
+- name: unset var
+  set_fact:
+    tasks_status: "Failed"
+    task_name: ""
+    task_id: ""

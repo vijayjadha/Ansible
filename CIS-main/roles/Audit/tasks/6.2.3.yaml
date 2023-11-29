@@ -1,4 +1,9 @@
 # 6.2.3 Ensure all groups in /etc/passwd exist in /etc/group
+- name: set var
+  set_fact:
+    task_name: "Ensure all groups in /etc/passwd exist in /etc/group"
+    task_id: "6.2.3"
+
 - name: 6.2.3 Ensure all groups in /etc/passwd exist in /etc/group
   shell: |
         for i in $(cut -s -d: -f4 /etc/passwd | sort -u ); do
@@ -12,15 +17,15 @@
 
 - name: Display
   set_fact:
-    tasks_status: "[Passed]"
+    tasks_status: "Passed"
   when: grep_result.stdout.find('') != -1
 
-- name: Save result in file
-  lineinfile:
-    path: "{{Result_path}}"
-    line: "6.2.3 Ensure all groups in /etc/passwd exist in /etc/group {{tasks_status}}"
-  delegate_to: localhost
+- name: Add result to task_results
+  set_fact:
+    task_results: "{{ task_results | default([]) + [{'task_id': task_id, 'task_name': task_name, 'tasks_status': tasks_status}] }}"
 
 - name: unset var
   set_fact:
-    tasks_status: "[Failed]"
+    tasks_status: "Failed"
+    task_name: ""
+    task_id: ""

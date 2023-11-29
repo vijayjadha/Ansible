@@ -1,0 +1,25 @@
+# 5.1.2.1.4 Ensure journald is not configured to receive logs from a remote client
+- name: set var
+  set_fact:
+    task_name: "Ensure journald is not configured to receive logs from a remote client"
+    task_id: "5.1.2.1.4"
+
+- name: 5.1.2.1.4 Ensure journald is not configured to receive logs from a remote client
+  shell: systemctl is-enabled systemd-journal-remote.socket
+  register: grep_result
+  ignore_errors: yes
+
+- name: Display 
+  set_fact:
+    tasks_status: "Passed"
+  when: grep_result.stdout.find('masked') != -1
+
+- name: Add result to task_results
+  set_fact:
+    task_results: "{{ task_results | default([]) + [{'task_id': task_id, 'task_name': task_name, 'tasks_status': tasks_status}] }}"
+
+- name: unset var
+  set_fact:
+    tasks_status: "Failed"
+    task_name: ""
+    task_id: ""
